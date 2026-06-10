@@ -36,7 +36,7 @@ namespace WebApiIdentity.Controllers
             var user = await _userManager.FindByNameAsync(model.UserName);
             if (user == null) return Unauthorized("Invalid username or password.");
 
-            if(!user.EmailConfirmed) return Unauthorized("Please confirm your email");
+            if (!user.EmailConfirmed) return Unauthorized("Please confirm your email");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 
@@ -47,7 +47,7 @@ namespace WebApiIdentity.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto model)
         {
-            if(await CheckEmailExistAsync(model.Email))
+            if (await CheckEmailExistAsync(model.Email))
             {
                 return BadRequest($"An existing account is using {model.Email}, email address. Please try with another email address");
             }
@@ -63,12 +63,14 @@ namespace WebApiIdentity.Controllers
 
             var result = await _userManager.CreateAsync(userToAdd, model.Password);
             if (!result.Succeeded) return BadRequest(result.Errors);
-            return Ok("Your account has been created, you can login");
+            return Ok(new JsonResult(
+                new { title = "Account Created", message = "Your account has been created, you can login now." }));
         }
 
         #region Private Helper methods
 
-        private UserDto CreateApplicationUserDto(User user) { 
+        private UserDto CreateApplicationUserDto(User user)
+        {
             return new UserDto
             {
                 FirstName = user.FirstName,
