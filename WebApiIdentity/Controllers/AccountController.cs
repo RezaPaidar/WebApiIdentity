@@ -77,7 +77,6 @@ namespace WebApiIdentity.Controllers
             };
         }
 
-
         private async Task<bool> CheckEmailExistAsync(string email)
         {
             return await _userManager.Users.AnyAsync(x => x.Email == email.ToLower());
